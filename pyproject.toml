@@ -1,3 +1,35 @@
+[tool.mypy]
+check_untyped_defs = true
+disallow_any_expr = true
+disallow_any_generics = true
+disallow_any_unimported = true
+disallow_incomplete_defs = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+show_error_codes = true
+warn_return_any = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests",
+]
+pythonpath = [
+    ".",
+]
+
+[tool.coverage.run]
+omit = [
+    "tests/*",
+    "test.py"
+]
+
+[tool.isort]
+# For black compatibility: https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#isort
+profile = "black"
+
+
 [tool.poetry]
 name = "simplewealth"
 version = "0.1.0"
