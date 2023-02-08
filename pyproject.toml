@@ -29,6 +29,8 @@ omit = [
 # For black compatibility: https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#isort
 profile = "black"
 
+[tool.sqlfluff.core]
+dialect = "postgres"
 
 [tool.poetry]
 name = "simplewealth"
