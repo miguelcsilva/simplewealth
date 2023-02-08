@@ -41,6 +41,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.11.1"
+pydantic = {extras = ["dotenv"], version = "^1.10.4"}
 
 
 [tool.poetry.group.dev.dependencies]
