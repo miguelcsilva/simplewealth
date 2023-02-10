@@ -22,7 +22,6 @@ pythonpath = [
 [tool.coverage.run]
 omit = [
     "tests/*",
-    "test.py"
 ]
 
 [tool.isort]
@@ -42,10 +41,11 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.11.1"
 pydantic = {extras = ["dotenv"], version = "^1.10.4"}
+SQLAlchemy = "^2.0.2"
+psycopg2 = "^2.9.5"
 
 
 [tool.poetry.group.dev.dependencies]
-sqlfluff = "^1.4.5"
 pytest = "^7.2.1"
 pytest-cov = "^4.0.0"
 mypy = "^1.0.0"

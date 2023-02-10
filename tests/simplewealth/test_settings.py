@@ -7,7 +7,7 @@ def test_Settings_default() -> None:
     SETTINGS = get_settings()
     assert (
         SETTINGS.DATABASE_URI
-        == "postgres://simplewealth:simplewealth@localhost:5432/simplewealth"
+        == "postgresql://simplewealth:simplewealth@localhost:5432/simplewealth"
     )
 
 
