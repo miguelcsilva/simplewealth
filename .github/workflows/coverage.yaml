@@ -3,6 +3,10 @@ on:
   pull_request:
     branches:
       - main
+  workflow_run:
+    workflows: ["Static Analysis"]
+    types: 
+      - completed
 jobs:
   coverage:
     runs-on: ubuntu-latest
