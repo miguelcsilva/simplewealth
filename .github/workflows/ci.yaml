@@ -27,7 +27,6 @@ jobs:
           isort --check-only .
           black --check .
           flake8 .
-          sqlfluff lint .
           mypy .
       - name: Test
         run: |
