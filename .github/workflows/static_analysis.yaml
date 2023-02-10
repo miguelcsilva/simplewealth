@@ -28,4 +28,4 @@ jobs:
           mypy .
       - name: Test
         run: |
-          pytest tests/ --cov-report xml:coverage.xml
+          pytest tests/
