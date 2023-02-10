@@ -11,6 +11,3 @@ printf "$SEPARATOR${LIGHT_CYAN}Running flake8:${NO_COLOR}\n"
 flake8 --statistics .
 printf "$SEPARATOR${LIGHT_CYAN}Running mypy:${NO_COLOR}\n"
 mypy .
-printf "$SEPARATOR${LIGHT_CYAN}Running pytest:${NO_COLOR}\n"
-pytest --quiet tests/
-printf $SEPARATOR
