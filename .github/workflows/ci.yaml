@@ -2,6 +2,7 @@ name: ci
 
 on: [push]
 
+name: "Static analysis"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,4 +31,4 @@ jobs:
           mypy .
       - name: Test
         run: |
-          pytest tests/
+          pytest tests/ --cov-report xml:coverage.xml
