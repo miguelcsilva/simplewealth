@@ -1,3 +1,7 @@
 from simplewealth.database import ENGINE, METADATA, create_database
 
-create_database(metadata=METADATA, engine=ENGINE)
+def main() -> None:
+    create_database(metadata=METADATA, engine=ENGINE)
+
+if __name__ == "__main__":
+    main() # pragma: no cover
