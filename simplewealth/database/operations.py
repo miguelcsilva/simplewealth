@@ -1,19 +1,24 @@
 import sqlalchemy as sa
 
-from .tables import define_operation_type
 
-
-def create_database(database_uri: str) -> tuple[sa.MetaData, sa.Engine]:
-    metadata = sa.MetaData()
-    engine = sa.create_engine(url=database_uri)
-
-    define_operation_type(metadata=metadata)
-    metadata.create_all(bind=engine)
-    return metadata, engine
-
-
-def insert(connection: sa.Connection, statements: tuple[sa.Insert, ...]) -> None:
-    with connection:
+def insert(engine: sa.Engine, statements: tuple[sa.Insert, ...]) -> None:
+    with engine.connect() as connection:
         for statement in statements:
             connection.execute(statement=statement)
         connection.commit()
+
+
+def get_insert_operation_type_defaults_statement(table: sa.Table) -> sa.Insert:
+    defaults: list[dict[str, str]] = [
+        {"name": "purchase"},
+        {"name": "sell"},
+        {"name": "yield"},
+    ]
+    return sa.insert(table).values(defaults)
+
+
+def get_insert_institution_statement(
+    table: sa.Table, institution_name: str
+) -> sa.Insert:
+    values: list[dict[str, str]] = [{"name": institution_name}]
+    return sa.insert(table).values(values)
