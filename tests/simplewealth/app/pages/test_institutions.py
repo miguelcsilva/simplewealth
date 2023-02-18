@@ -47,3 +47,12 @@ def test_submit_new_instituion():
         institution_name=institution_name
     )
     mock_insert.assert_called_once_with(engine=mock_engine, statements=(mock_get_insert_institution_statement.return_value,))
+
+def test_institutions():
+    with (
+        patch("simplewealth.app.pages.institutions.config_institutions_page") as mock_config_institutions_page,
+        patch("simplewealth.app.pages.institutions.add_institution") as mock_add_institution,
+    ):
+        institutions()
+    mock_config_institutions_page.assert_called_once()
+    mock_add_institution.assert_called_once()

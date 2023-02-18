@@ -10,4 +10,5 @@ def main() -> None:
     config_main_page()
 
 
-main()
+if __name__ == "__main__":
+    main() # pragma: no cover
