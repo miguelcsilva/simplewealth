@@ -3,7 +3,7 @@ from unittest.mock import patch
 from simplewealth.app.main import config_main_page, main
 
 
-def test_config_main_page():
+def test_config_main_page() -> None:
     with (
         patch("simplewealth.app.main.st.set_page_config") as mock_set_page_config,
         patch("simplewealth.app.main.st.title") as mock_title,
@@ -13,7 +13,7 @@ def test_config_main_page():
     mock_title.assert_called_once()
 
 
-def test_main():
+def test_main() -> None:
     with patch("simplewealth.app.main.config_main_page") as mock_config_main_page:
         main()
     mock_config_main_page.assert_called_once()
