@@ -1,16 +1,34 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import sqlalchemy as sa
 
 
-def test_insert_defaults_in_table_operation_type_column_names() -> None:
-    with (
-        patch("simplewealth.database.initialization.METADATA"),
-        patch("simplewealth.database.initialization.ENGINE"),
-    ):
-        from simplewealth.database.initialization import define_operation_type_table
+def test_get_engine() -> None:
+    with patch(
+        "simplewealth.database.initialization.sa.create_engine"
+    ) as mock_create_engine:
+        from simplewealth.database.initialization import get_engine
 
-        table = define_operation_type_table(metadata=sa.MetaData())
+        mock_database_uri = MagicMock()
+        get_engine(url=mock_database_uri)
+    mock_create_engine.assert_called_once_with(url=mock_database_uri)
+
+
+def test_get_metadata() -> None:
+    with patch(
+        "simplewealth.database.initialization.sa.MetaData.reflect"
+    ) as mock_metadata_reflect:
+        from simplewealth.database.initialization import get_metadata
+
+        mock_engine = MagicMock()
+        get_metadata(engine=mock_engine)
+    mock_metadata_reflect.assert_called_once_with(bind=mock_engine)
+
+
+def test_insert_defaults_in_table_operation_type_column_names() -> None:
+    from simplewealth.database.initialization import define_operation_type_table
+
+    table = define_operation_type_table(metadata=sa.MetaData())
     assert all(
         # sqlalchemy Table.columns method returns type Column[Any]
         name in table.columns.keys()  # type: ignore[misc]
@@ -19,13 +37,9 @@ def test_insert_defaults_in_table_operation_type_column_names() -> None:
 
 
 def test_insert_defaults_in_table_operation_type_column_types() -> None:
-    with (
-        patch("simplewealth.database.initialization.METADATA"),
-        patch("simplewealth.database.initialization.ENGINE"),
-    ):
-        from simplewealth.database.initialization import define_operation_type_table
+    from simplewealth.database.initialization import define_operation_type_table
 
-        table = define_operation_type_table(metadata=sa.MetaData())
+    table = define_operation_type_table(metadata=sa.MetaData())
     # sqlalchemy Table.columns method returns type Column[Any]
     assert type(table.columns.id.type) is sa.Integer  # type: ignore[misc]
     assert type(table.columns.name.type) is sa.String  # type: ignore[misc]
@@ -33,18 +47,18 @@ def test_insert_defaults_in_table_operation_type_column_types() -> None:
 
 def test_create_database() -> None:
     with (
-        patch("simplewealth.database.initialization.METADATA"),
-        patch("simplewealth.database.initialization.ENGINE"),
-        patch("sqlalchemy.MetaData.create_all") as patch_create_all,
         patch(
             "simplewealth.database.initialization.define_operation_type_table"
-        ) as patch_define_table_operation_type,
+        ) as mock_define_table_operation_type,
+        patch(
+            "simplewealth.database.initialization.define_institutions_table"
+        ) as mock_define_institutions_table,
     ):
         from simplewealth.database import create_database
 
-        create_database(
-            metadata=sa.MetaData(),
-            engine=sa.create_engine(url="postgresql://test:test@testhost:1234/test"),
-        )
-    patch_define_table_operation_type.assert_called_once()
-    patch_create_all.assert_called_once()
+        mock_metadata, mock_engine = MagicMock(), MagicMock()
+        with patch.object(mock_metadata, "create_all") as mock_metadata_create_all:
+            create_database(metadata=mock_metadata, engine=mock_engine)
+    mock_define_table_operation_type.assert_called_once_with(metadata=mock_metadata)
+    mock_define_institutions_table.assert_called_once_with(metadata=mock_metadata)
+    mock_metadata_create_all.assert_called_once_with(bind=mock_engine)

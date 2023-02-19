@@ -6,7 +6,9 @@ def get_engine(url: str) -> sa.Engine:
 
 
 def get_metadata(engine: sa.Engine) -> sa.MetaData:
-    return sa.MetaData().reflect(bind=engine)
+    metadata = sa.MetaData()
+    metadata.reflect(bind=engine)
+    return metadata
 
 
 def define_operation_type_table(metadata: sa.MetaData) -> sa.Table:
