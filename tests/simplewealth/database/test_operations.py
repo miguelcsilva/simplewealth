@@ -10,7 +10,7 @@ def test_insert() -> None:
     execute_calls = [call(statement=statement) for statement in mock_statements]
     with patch.object(mock_engine, "connect") as mock_connection:
         mock_connection_return_value = MagicMock()
-        mock_connection.return_value.__enter__.return_value = (
+        mock_connection.return_value.__enter__.return_value = (  # type: ignore[misc]
             mock_connection_return_value
         )
         with (
