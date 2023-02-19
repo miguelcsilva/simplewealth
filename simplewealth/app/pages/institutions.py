@@ -1,8 +1,8 @@
 import sqlalchemy as sa
 import streamlit as st
 
-from ...database import get_engine, get_metadata
-from ...database.operations import get_insert_institution_statement, insert
+from simplewealth.database import get_engine, get_metadata
+from simplewealth.database.operations import get_insert_institution_statement, insert
 
 
 def config_institutions_page() -> None:
@@ -26,7 +26,7 @@ def submit_new_institution(name: str, table: sa.Table, engine: sa.Engine) -> Non
 
 
 def institutions() -> None:
-    from ...settings import SETTINGS
+    from simplewealth.settings import SETTINGS
 
     engine = get_engine(url=SETTINGS.DATABASE_URI)
     metadata = get_metadata(engine=engine)
