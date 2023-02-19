@@ -1,7 +1,9 @@
+from typing import Iterable
+
 import sqlalchemy as sa
 
 
-def insert(engine: sa.Engine, statements: tuple[sa.Insert, ...]) -> None:
+def insert(engine: sa.Engine, statements: Iterable[sa.Insert]) -> None:
     with engine.connect() as connection:
         for statement in statements:
             connection.execute(statement=statement)
