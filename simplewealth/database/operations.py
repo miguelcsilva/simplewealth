@@ -17,8 +17,6 @@ def get_insert_operation_type_defaults_statement(table: sa.Table) -> sa.Insert:
     return sa.insert(table).values(defaults)
 
 
-def get_insert_institution_statement(
-    table: sa.Table, institution_name: str
-) -> sa.Insert:
-    values: list[dict[str, str]] = [{"name": institution_name}]
+def get_insert_institution_statement(table: sa.Table, name: str) -> sa.Insert:
+    values: list[dict[str, str]] = [{"name": name}]
     return sa.insert(table).values(values)

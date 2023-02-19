@@ -1,10 +1,12 @@
 import sqlalchemy as sa
 
-from ..settings import SETTINGS
 
-ENGINE = sa.create_engine(url=SETTINGS.DATABASE_URI)
-METADATA = sa.MetaData()
-METADATA.reflect(bind=ENGINE)
+def get_engine(url: str) -> sa.Engine:
+    return sa.create_engine(url=url)
+
+
+def get_metadata(engine: sa.Engine) -> sa.MetaData:
+    return sa.MetaData().reflect(bind=engine)
 
 
 def define_operation_type_table(metadata: sa.MetaData) -> sa.Table:
