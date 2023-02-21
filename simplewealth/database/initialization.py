@@ -11,9 +11,9 @@ def get_metadata(engine: sa.Engine) -> sa.MetaData:
     return metadata
 
 
-def define_operation_type_table(metadata: sa.MetaData) -> sa.Table:
+def define_operation_types_table(metadata: sa.MetaData) -> sa.Table:
     return sa.Table(
-        "operations_type",
+        "operation_types",
         metadata,
         sa.Column(name="id", type_=sa.Integer, primary_key=True),
         sa.Column(name="name", type_=sa.String, nullable=False, unique=True),
@@ -30,6 +30,6 @@ def define_institutions_table(metadata: sa.MetaData) -> sa.Table:
 
 
 def create_database(metadata: sa.MetaData, engine: sa.Engine) -> None:
-    define_operation_type_table(metadata=metadata)
+    define_operation_types_table(metadata=metadata)
     define_institutions_table(metadata=metadata)
     metadata.create_all(bind=engine)

@@ -15,63 +15,125 @@ def test_config_main_page() -> None:
     mock_title.assert_called_once()
 
 
-def test_add_institution_not_pressed() -> None:
+def test_add_institution_button_not_pressed() -> None:
     with (
         patch("simplewealth.app.pages.institutions.st.text_input") as mock_text_input,
         patch("simplewealth.app.pages.institutions.st.button") as mock_button,
-        patch(
-            "simplewealth.app.pages.institutions.submit_new_institution"
-        ) as mock_submit_new_institution,
+        patch("simplewealth.app.pages.institutions.execute") as mock_execute,
     ):
         mock_text_input.return_value = "test"
         mock_button.return_value = False
-        from simplewealth.app.pages.institutions import add_institution
+        from simplewealth.app.pages.institutions import add_institution_component
 
-        add_institution(table=MagicMock(), engine=MagicMock())
-    mock_submit_new_institution.assert_not_called()
+        add_institution_component(table=MagicMock(), engine=MagicMock())
+    mock_execute.assert_not_called()
 
 
-def test_add_institution_pressed() -> None:
+def test_add_institution_button_pressed() -> None:
     with (
         patch("simplewealth.app.pages.institutions.st.text_input") as mock_text_input,
         patch("simplewealth.app.pages.institutions.st.button") as mock_button,
         patch(
-            "simplewealth.app.pages.institutions.submit_new_institution"
-        ) as mock_submit_new_institution,
+            "simplewealth.app.pages.institutions.get_insert_institution_query"
+        ) as mock_get_insert_institution_query,
+        patch("simplewealth.app.pages.institutions.execute") as mock_execute,
     ):
         mock_text_input.return_value = "test"
         mock_button.return_value = True
-        from simplewealth.app.pages.institutions import add_institution
-
+        mock_insert_institution_query = MagicMock()
+        mock_get_insert_institution_query.return_value = mock_insert_institution_query
         mock_table, mock_engine = MagicMock(), MagicMock()
-        add_institution(table=mock_table, engine=mock_engine)
-    mock_submit_new_institution.assert_called_with(
-        name="test", table=mock_table, engine=mock_engine
+        from simplewealth.app.pages.institutions import add_institution_component
+
+        add_institution_component(table=mock_table, engine=mock_engine)
+    mock_execute.assert_called_with(
+        engine=mock_engine, statements=(mock_insert_institution_query,)
     )
 
 
-def test_submit_new_instituion() -> None:
+def test_update_institution_button_not_pressed() -> None:
     with (
-        patch(
-            "simplewealth.app.pages.institutions.get_insert_institution_statement"
-        ) as mock_get_insert_institution_statement,
-        patch("simplewealth.app.pages.institutions.insert") as mock_insert,
+        patch("simplewealth.app.pages.institutions.st.text_input") as mock_text_input,
+        patch("simplewealth.app.pages.institutions.st.selectbox") as mock_selectbox,
+        patch("simplewealth.app.pages.institutions.st.button") as mock_button,
+        patch("simplewealth.app.pages.institutions.execute") as mock_execute,
     ):
-        institution_name = "test"
-        mock_get_insert_institution_statement.return_value = MagicMock()
-        from simplewealth.app.pages.institutions import submit_new_institution
+        mock_text_input.return_value = "text_input"
+        mock_selectbox.return_value = "select_box"
+        mock_button.return_value = False
+        from simplewealth.app.pages.institutions import add_institution_component
 
-        mock_table, mock_engine = MagicMock(), MagicMock()
-        submit_new_institution(
-            name=institution_name, table=mock_table, engine=mock_engine
+        add_institution_component(table=MagicMock(), engine=MagicMock())
+    mock_execute.assert_not_called()
+
+
+def test_update_institution_button_pressed() -> None:
+    with (
+        patch("simplewealth.app.pages.institutions.st.text_input"),
+        patch("simplewealth.app.pages.institutions.st.selectbox"),
+        patch("simplewealth.app.pages.institutions.st.button") as mock_button,
+        patch("simplewealth.app.pages.institutions.get_all_institutions_name"),
+        patch(
+            "simplewealth.app.pages.institutions.get_update_institution_name_query"
+        ) as mock_get_update_institution_name_query,
+        patch("simplewealth.app.pages.institutions.execute") as mock_execute,
+        patch(
+            "simplewealth.app.pages.institutions.st.experimental_rerun"
+        ) as mock_experimental_rerun,
+    ):
+        mock_button.return_value = True
+        mock_update_institution_name_query = MagicMock()
+        mock_get_update_institution_name_query.return_value = (
+            mock_update_institution_name_query
         )
-    mock_get_insert_institution_statement.assert_called_once_with(
-        table=mock_table, name=institution_name
+        mock_table, mock_engine = MagicMock(), MagicMock()
+        from simplewealth.app.pages.institutions import update_institution_component
+
+        update_institution_component(table=mock_table, engine=mock_engine)
+    mock_execute.assert_called_once_with(
+        engine=mock_engine, statements=(mock_update_institution_name_query,)
     )
-    mock_insert.assert_called_once_with(
-        engine=mock_engine,
-        statements=(mock_get_insert_institution_statement.return_value,),
+    mock_experimental_rerun.assert_called_once()
+
+
+def test_delete_institution_button_not_pressed() -> None:
+    with (
+        patch("simplewealth.app.pages.institutions.st.selectbox"),
+        patch("simplewealth.app.pages.institutions.st.button") as mock_button,
+        patch("simplewealth.app.pages.institutions.get_all_institutions_name"),
+        patch("simplewealth.app.pages.institutions.execute") as mock_execute,
+    ):
+        mock_button.return_value = False
+        from simplewealth.app.pages.institutions import delete_institution_component
+
+        delete_institution_component(table=MagicMock(), engine=MagicMock())
+    mock_execute.assert_not_called()
+
+
+def test_delete_institution_button_pressed() -> None:
+    with (
+        patch("simplewealth.app.pages.institutions.st.selectbox"),
+        patch("simplewealth.app.pages.institutions.st.button") as mock_button,
+        patch("simplewealth.app.pages.institutions.get_all_institutions_name"),
+        patch(
+            "simplewealth.app.pages.institutions.get_delete_institution_query"
+        ) as mock_get_delete_institution_query,
+        patch("simplewealth.app.pages.institutions.execute") as mock_execute,
+        patch(
+            "simplewealth.app.pages.institutions.st.experimental_rerun"
+        ) as mock_experimental_rerun,
+    ):
+        mock_button.return_value = True
+        mock_delete_institution_query = MagicMock()
+        mock_get_delete_institution_query.return_value = mock_delete_institution_query
+        mock_table, mock_engine = MagicMock(), MagicMock()
+        from simplewealth.app.pages.institutions import delete_institution_component
+
+        delete_institution_component(table=mock_table, engine=mock_engine)
+    mock_execute.assert_called_once_with(
+        engine=mock_engine, statements=(mock_delete_institution_query,)
     )
+    mock_experimental_rerun.assert_called_once()
 
 
 def test_institutions() -> None:
@@ -82,8 +144,14 @@ def test_institutions() -> None:
             "simplewealth.app.pages.institutions.config_institutions_page"
         ) as mock_config_institutions_page,
         patch(
-            "simplewealth.app.pages.institutions.add_institution"
-        ) as mock_add_institution,
+            "simplewealth.app.pages.institutions.add_institution_component"
+        ) as mock_add_institution_component,
+        patch(
+            "simplewealth.app.pages.institutions.update_institution_component"
+        ) as mock_update_institution_component,
+        patch(
+            "simplewealth.app.pages.institutions.delete_institution_component"
+        ) as mock_delete_institution_component,
     ):
         from simplewealth.app.pages.institutions import institutions
 
@@ -91,4 +159,6 @@ def test_institutions() -> None:
     mock_get_engine.assert_called_once()
     mock_get_metadata.assert_called_once()
     mock_config_institutions_page.assert_called_once()
-    mock_add_institution.assert_called_once()
+    mock_add_institution_component.assert_called_once()
+    mock_update_institution_component.assert_called_once()
+    mock_delete_institution_component.assert_called_once()

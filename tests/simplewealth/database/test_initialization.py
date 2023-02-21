@@ -25,10 +25,10 @@ def test_get_metadata() -> None:
     mock_metadata_reflect.assert_called_once_with(bind=mock_engine)
 
 
-def test_insert_defaults_in_table_operation_type_column_names() -> None:
-    from simplewealth.database.initialization import define_operation_type_table
+def test_insert_defaults_in_table_operation_types_column_names() -> None:
+    from simplewealth.database.initialization import define_operation_types_table
 
-    table = define_operation_type_table(metadata=sa.MetaData())
+    table = define_operation_types_table(metadata=sa.MetaData())
     assert all(
         # sqlalchemy Table.columns method returns type Column[Any]
         name in table.columns.keys()  # type: ignore[misc]
@@ -36,10 +36,10 @@ def test_insert_defaults_in_table_operation_type_column_names() -> None:
     )
 
 
-def test_insert_defaults_in_table_operation_type_column_types() -> None:
-    from simplewealth.database.initialization import define_operation_type_table
+def test_insert_defaults_in_table_operation_types_column_types() -> None:
+    from simplewealth.database.initialization import define_operation_types_table
 
-    table = define_operation_type_table(metadata=sa.MetaData())
+    table = define_operation_types_table(metadata=sa.MetaData())
     # sqlalchemy Table.columns method returns type Column[Any]
     assert type(table.columns.id.type) is sa.Integer  # type: ignore[misc]
     assert type(table.columns.name.type) is sa.String  # type: ignore[misc]
@@ -48,8 +48,8 @@ def test_insert_defaults_in_table_operation_type_column_types() -> None:
 def test_create_database() -> None:
     with (
         patch(
-            "simplewealth.database.initialization.define_operation_type_table"
-        ) as mock_define_table_operation_type,
+            "simplewealth.database.initialization.define_operation_types_table"
+        ) as mock_define_table_operation_types,
         patch(
             "simplewealth.database.initialization.define_institutions_table"
         ) as mock_define_institutions_table,
@@ -59,6 +59,6 @@ def test_create_database() -> None:
         mock_metadata, mock_engine = MagicMock(), MagicMock()
         with patch.object(mock_metadata, "create_all") as mock_metadata_create_all:
             create_database(metadata=mock_metadata, engine=mock_engine)
-    mock_define_table_operation_type.assert_called_once_with(metadata=mock_metadata)
+    mock_define_table_operation_types.assert_called_once_with(metadata=mock_metadata)
     mock_define_institutions_table.assert_called_once_with(metadata=mock_metadata)
     mock_metadata_create_all.assert_called_once_with(bind=mock_engine)
